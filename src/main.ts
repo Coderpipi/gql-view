@@ -1,11 +1,11 @@
 import { ApolloClient, createHttpLink, InMemoryCache } from '@apollo/client/core'
 import { provideApolloClient } from "@vue/apollo-composable"
+import ElementPlus from 'element-plus'
+import 'element-plus/dist/index.css'
 import { createPinia } from "pinia"
 import { createApp, h } from "vue"
 
 import App from "./App.vue"
-
-import "./assets/main.css"
 import router from "./router"
 
 const httpLink = createHttpLink({
@@ -26,4 +26,5 @@ const app = createApp({
 })
 app.use(createPinia())
 app.use(router)
+app.use(ElementPlus)
 app.mount("#app")
