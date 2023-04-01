@@ -1,32 +1,21 @@
-import { useQuery } from "@vue/apollo-composable"
+import { createUserMutation, deleteUserMutation, getUserByIDQuery, getUsersQuery } from "@/gql/user_graphql_schema"
+import { useMutation, useQuery } from "@vue/apollo-composable"
 import { gql } from "graphql-tag"
 
 export function getUserByID(id: number) {
-    return useQuery(gql`
-      query UserQuery($id: Int) {
-    getUserByID(ID: $id) {
-        ...respFields
-    }
-}
-     fragment respFields on User {
-    id
-    username
-    age
-    sex
-}`, {id: id})
+    return useQuery(gql(getUserByIDQuery), {id: id})
 }
 
 export function getUsers(ids: Array<number> = []) {
-    return useQuery(gql`
-      query UserQuery($ids: [Int]!) {
-    getUsers(IDs: $ids) {
-        ...respFields
-    }
+    return useQuery(gql(getUsersQuery), {ids: ids})
 }
-     fragment respFields on User {
-    id
-    username
-    age
-    sex
-}`, {ids: ids})
+
+export function createUser(user: User) {
+    const {mutate: sendMessage} = useMutation(gql(createUserMutation))
+    return sendMessage({input: user})
+}
+
+export function deleteUser(id: number) {
+    const {mutate: sendMessage} = useMutation(gql(deleteUserMutation))
+    return sendMessage({id})
 }

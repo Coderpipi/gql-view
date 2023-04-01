@@ -7,7 +7,7 @@
       <h1>{{ user.sex }}</h1>
     </div>
     <input type="number" name="test" id="test" v-model="id">
-    <button @click="getUser">查询</button>
+    <button @click="getUser(id)">查询</button>
     <hr>
   </div>
 </template>
@@ -18,12 +18,14 @@ import { computed, ref } from "vue"
 
 // 定义响应式数据 ref对象
 const id = ref(2)
-const {result, variables} = getUserByID(id.value)
-const user = computed(() => result.value?.getUserByID ?? [])
 
-function getUser() {
+const {result, variables} = getUserByID(id.value)
+
+const user = computed<User>(() => result.value?.user ?? [])
+
+const getUser = (id: number) => {
   variables.value = {
-    id: id.value
+    id: id
   }
 }
 </script>
