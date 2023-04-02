@@ -5,19 +5,22 @@
       <h1>{{ user.username }}</h1>
       <h1>{{ user.age }}</h1>
       <h1>{{ user.sex }}</h1>
+      <h1>{{ user.type }}</h1>
+      <h1>{{ user.phone }}</h1>
     </div>
-    <input type="number" name="test" id="test" v-model="id">
+    <span style="margin-right: 10px">please input your user id: </span>
+    <input id="test" v-model="id" name="test" type="number">
     <button @click="getUser(id)">查询</button>
     <hr>
   </div>
 </template>
 
-<script setup lang="ts">
+<script lang="ts" setup>
 import { getUserByID } from '@/api/user'
 import { computed, ref } from "vue"
 
 // 定义响应式数据 ref对象
-const id = ref(2)
+const id = ref(0)
 
 const {result, variables} = getUserByID(id.value)
 

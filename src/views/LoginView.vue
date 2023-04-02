@@ -6,15 +6,16 @@
       :rules="rules"
       label-width="120px"
       class="demo-ruleForm"
+      size="default"
   >
-    <el-form-item label="Password" prop="pass">
-      <el-input v-model="user.password" type="password" autocomplete="off"/>
+    <el-form-item label="Phone" prop="phone">
+      <el-input v-model="user.phone" :placeholder="'Phone'"/>
     </el-form-item>
-    <el-form-item label="User Name" prop="username">
-      <el-input v-model="user.username"/>
+    <el-form-item label="Password" prop="password">
+      <el-input v-model="user.password" type="password" autocomplete="off" :placeholder="'Password'"/>
     </el-form-item>
     <el-form-item>
-      <el-button type="primary" @click="login(ruleFormRef)"
+      <el-button type="primary" @click="submit(ruleFormRef)"
       >Submit
       </el-button
       >
@@ -24,34 +25,38 @@
 </template>
 
 <script lang="ts" setup>
+import { login } from "@/api/login"
 import type { FormInstance, FormRules } from "element-plus"
+import { ElMessage } from "element-plus"
+import Cookies from 'js-cookie'
 import { reactive, ref } from "vue"
+import { useRouter } from "vue-router"
 
 const user = reactive<UserLoginForm>({
-  username: "",
-  password: ""
+  phone: "",
+  password: "",
+  verifyCode: "",
+  loginType: 1
 })
 
 const ruleFormRef = ref<FormInstance>()
 const rules = reactive<FormRules>({
-  username: [
+  phone: [
     {
       type: "string",
       required: true,
-      message: 'Please Input Your User Name',
+      message: 'Please Input Your 11 PhoneNumbers',
+      len: 11,
       trigger: 'blur',
     },
-    {
-      type: "string",
-      min: 4,
-      max: 16,
-      message: 'User Name Length must between 4 and 16',
-      trigger: 'blur',
-    }
   ],
-  pass: []
+  password: [
+    {
+      required: true
+    }
+  ]
 })
-const login = async (formEl: FormInstance | undefined) => {
+const submit = async (formEl: FormInstance | undefined) => {
   if (!formEl) {
     return
   }
@@ -59,8 +64,29 @@ const login = async (formEl: FormInstance | undefined) => {
     if (!valid) {
       return
     }
-    console.log(user)
+    let {onResult, onError} = login(user)
+    onResult((result) => {
+      console.log(result)
+      // 返回结果后写入cookie
+      Cookies.set("token", result.data.tokenString)
+      Cookies.set("user_info", JSON.stringify(result.data.user))
+      // 跳转到user详情页
+      useRouter().push({
+        name: 'users'
+      })
+    })
+    onError((err) => {
+      ElMessage({
+        message: err.message,
+        type: 'error',
+      })
+    })
   })
+}
+
+const resetForm = (formEl: FormInstance | undefined) => {
+  if (!formEl) return
+  formEl.resetFields()
 }
 </script>
 

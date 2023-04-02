@@ -11,6 +11,7 @@ export function getUsers(ids: Array<number> = []) {
 }
 
 export function createUser(user: User) {
+    user.type = Number(user.type)
     const {mutate: sendMessage} = useMutation(gql(createUserMutation))
     return sendMessage({input: user})
 }
@@ -18,4 +19,9 @@ export function createUser(user: User) {
 export function deleteUser(id: number) {
     const {mutate: sendMessage} = useMutation(gql(deleteUserMutation))
     return sendMessage({id})
+}
+
+export function updateUser(user: User) {
+    console.log(user)
+    return new Promise<boolean>((resolve, reject) => {resolve(true)})
 }

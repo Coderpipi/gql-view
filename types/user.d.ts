@@ -8,6 +8,13 @@ interface User {
 }
 
 interface UserLoginForm {
-    username: string
+    phone: string
     password: string
+    verifyCode: string
+    loginType: number
+}
+
+interface Token {
+    tokenString: string
+    user: User
 }

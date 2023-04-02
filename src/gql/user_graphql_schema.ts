@@ -42,4 +42,16 @@ mutation ($id: Int!) {
 }
 ${userFieldFragment}   
 `
+
+export const loginQuery = `
+query ($input: UserLoginInput!){
+    login(input: $input) {
+        token
+        user {
+            ...respFields
+        }
+    }
+}
+${userFieldFragment}
+`
 export {}
