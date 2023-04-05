@@ -2,17 +2,17 @@
   <el-form
       ref="ruleFormRef"
       :model="user"
-      status-icon
       :rules="rules"
-      label-width="120px"
       class="demo-ruleForm"
+      label-width="120px"
       size="default"
+      status-icon
   >
     <el-form-item label="Phone" prop="phone">
       <el-input v-model="user.phone" :placeholder="'Phone'"/>
     </el-form-item>
     <el-form-item label="Password" prop="password">
-      <el-input v-model="user.password" type="password" autocomplete="off" :placeholder="'Password'"/>
+      <el-input v-model="user.password" :placeholder="'Password'" autocomplete="off" type="password"/>
     </el-form-item>
     <el-form-item>
       <el-button type="primary" @click="submit(ruleFormRef)"
@@ -32,6 +32,7 @@ import Cookies from 'js-cookie'
 import { reactive, ref } from "vue"
 import { useRouter } from "vue-router"
 
+const router = useRouter()
 const user = reactive<UserLoginForm>({
   phone: "",
   password: "",
@@ -65,13 +66,13 @@ const submit = async (formEl: FormInstance | undefined) => {
       return
     }
     let {onResult, onError} = login(user)
-    onResult((result) => {
-      console.log(result)
+    onResult(({data}) => {
+      console.log(data)
       // 返回结果后写入cookie
-      Cookies.set("token", result.data.tokenString)
-      Cookies.set("user_info", JSON.stringify(result.data.user))
+      Cookies.set("token", data.login.token)
+      Cookies.set("user_info", JSON.stringify(data.login.user))
       // 跳转到user详情页
-      useRouter().push({
+      router.push({
         name: 'users'
       })
     })

@@ -3,5 +3,5 @@ import { useQuery } from "@vue/apollo-composable"
 import { gql } from "graphql-tag"
 
 export function login(user: UserLoginForm) {
-    return useQuery<Token>(gql(loginQuery), {input: user})
+    return useQuery(gql(loginQuery), {input: user})
 }

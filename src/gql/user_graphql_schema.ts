@@ -33,6 +33,14 @@ mutation ($input: UserInput!) {
 }
 ${userFieldFragment}   
 `
+export const updateUserMutation = `
+mutation updateUser($id:Int!, $input:UserInput!) {
+    updateUser(ID: $id, input: $input) {
+        ...respFields
+    }
+}
+${userFieldFragment}   
+`
 
 export const deleteUserMutation = `
 mutation ($id: Int!) {

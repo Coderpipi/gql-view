@@ -15,6 +15,6 @@ interface UserLoginForm {
 }
 
 interface Token {
-    tokenString: string
+    token: string
     user: User
 }

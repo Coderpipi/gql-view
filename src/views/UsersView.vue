@@ -1,5 +1,6 @@
 <template>
   <div class="users ">
+
     <el-table :data="users" style="width: 100%">
       <el-table-column label="Name" prop="username"/>
       <el-table-column label="Phone" prop="phone"/>
@@ -8,10 +9,17 @@
       <el-table-column :formatter="typeFormatter" label="Type" prop="type"/>
       <el-table-column align="right">
         <template #header>
-          <el-button size="small" @click="handleCreate"
-          >Create
-          </el-button
-          >
+          <el-popover :placement="'bottom'" :visible="visible" width="100%">
+            <UserForm :user-form="user" :visible="visible" @cancel="visible = false" @submit="submit"></UserForm>
+            <template #reference>
+              <el-button size="small" @click="handleCreate"
+              >Create
+              </el-button
+              >
+            </template>
+
+          </el-popover>
+
         </template>
         <template #default="{row}">
           <el-button size="small" @click="handleEdit(row)"
@@ -34,11 +42,20 @@
 
 <script lang="ts" setup>
 import { deleteUser, getUsers } from "@/api/user"
-import { computed, onMounted } from "vue"
-import { useRoute, useRouter } from "vue-router"
+import UserForm from "@/components/UserForm.vue"
+import { computed, onMounted, ref } from "vue"
+import { useRouter } from "vue-router"
 
+const user = ref<User>({
+  id: 0,
+  age: undefined,
+  type: undefined,
+  username: '',
+  sex: '',
+  phone: ''
+})
+const visible = ref(false)
 const router = useRouter()
-const route = useRoute()
 const typeList = ["Unknown", "Normal", "Vip"]
 const typeFormatter = (row: User) => {
   return typeList[row.type ?? 0]
@@ -51,22 +68,36 @@ const users = computed({
   set: () => {}
 })
 
+
+const submit = () => {
+  refetch()
+  visible.value = !visible.value
+}
+
 const handleCreate = () => {
   // 跳转到user详情页
-  router.push({
-    name: 'create-user',
-  })
+  user.value = {
+    id: 0,
+    age: undefined,
+    type: undefined,
+    username: '',
+    sex: '',
+    phone: ''
+  }
+  visible.value = true
 }
 
 const handleEdit = (curr: User) => {
+  visible.value = true
+  user.value = curr
   // 跳转到user详情页
-  router.push({
-    name: 'edit-user',
-    params: {
-      ...route.params,
-      "id": curr.id
-    }
-  })
+  // router.push({
+  //   name: 'edit-user',
+  //   params: {
+  //     ...route.params,
+  //     "id": curr.id
+  //   }
+  // })
 }
 
 const handleDelete = (curr: User) => {
